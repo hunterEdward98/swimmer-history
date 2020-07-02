@@ -4,10 +4,6 @@ import axios from 'axios';
 // worker Saga: will be fired on "LOGOUT" actions
 function* emptyShelf(action) {
   try {
-    // const config = {
-    //   headers: { 'Content-Type': 'application/json' },
-    //   withCredentials: true,
-    // };
     yield axios.delete(`/api/shelf/${action.payload}`);
     yield put({ type: 'FETCH_BOOKS' });
 

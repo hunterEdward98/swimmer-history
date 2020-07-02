@@ -4,11 +4,6 @@ import axios from 'axios';
 // worker Saga: will be fired on "LOGOUT" actions
 function* addToShelf(action) {
   try {
-    // const config = {
-    //   headers: { 'Content-Type': 'application/json' },
-    //   withCredentials: true,
-    // };
-
     yield axios.post('/api/shelf', action.payload);
     yield put({ type: 'FETCH_BOOKS' });
 
