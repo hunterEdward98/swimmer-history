@@ -9,7 +9,9 @@ import Axios from 'axios';
 class InfoPage extends React.Component {
 
         state = {
-          ourObj: []
+          ourObj: [],
+          description: '',
+          image_url: ''
         }
         
         componentDidMount(){
@@ -25,10 +27,27 @@ class InfoPage extends React.Component {
 
         });
   }
+  addInputs = (key, event) => {
+    this.setState({ [key]: event.target.value })
+  }
+
+  submitBook = () => {
+
+    const newBook= { 
+      description: this.state.description,
+      image_url: this.state.image_url
+    }
+    Axios.post('/api/shelf', newBook ).then((response) => {
+      console.log('post is sent')
+    }).catch(error => console.log('unsuccessful post', error));
+  }
 
       render() {
         return ( 
            <div>
+             <input placeholder='book description' value={this.state.description} onChange={(event) => this.addInputs('description', event)}/>
+             <input placeholder='image url' value={this.state.image_url} onChange= {(event) => this.addInputs('image_url', event)}/>
+             <button onClick={()=>this.submitBook()}>Submit</button>
               {this.state.ourObj.map(x=><div><div>{x.description}</div><img src={x.image_url}/></div>)}
            </div>
         )
