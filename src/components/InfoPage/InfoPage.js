@@ -1,5 +1,5 @@
 import React from 'react';
-import Axios from 'axios';
+import {connect} from 'react-redux';
 
 // This is one of our simplest components
 // It doesn't have local state, so it can be a function component.
@@ -19,14 +19,18 @@ class InfoPage extends React.Component {
         }
   
         fillShelf = () => {
-    Axios.get('/api/shelf').then((response) => {
-        console.log('this is what we get', response.data)
-        this.setState({
-          ourObj: response.data
-        })
+    // Axios.get('/api/shelf').then((response) => {
+    //     console.log('this is what we get', response.data)
+    //     this.setState({
+    //       ourObj: response.data
+    //     })
 
-        });
-  }
+          this.props.dispatch({
+            type: 'FETCH_BOOKS',
+          });
+
+        }
+  
   addInputs = (key, event) => {
     this.setState({ [key]: event.target.value })
   }
@@ -37,9 +41,14 @@ class InfoPage extends React.Component {
       description: this.state.description,
       image_url: this.state.image_url
     }
-    Axios.post('/api/shelf', newBook ).then((response) => {
-      console.log('post is sent')
-    }).catch(error => console.log('unsuccessful post', error));
+    // Axios.post('/api/shelf', newBook ).then((response) => {
+    //   console.log('post is sent')
+    // }).catch(error => console.log('unsuccessful post', error));
+
+    this.props.dispatch({
+      type: 'ADD_TO_SHELF',
+      payload: newBook
+    });
   }
 
       render() {
@@ -48,11 +57,18 @@ class InfoPage extends React.Component {
              <input placeholder='book description' value={this.state.description} onChange={(event) => this.addInputs('description', event)}/>
              <input placeholder='image url' value={this.state.image_url} onChange= {(event) => this.addInputs('image_url', event)}/>
              <button onClick={()=>this.submitBook()}>Submit</button>
-              {this.state.ourObj.map(x=><div><div>{x.description}</div><img src={x.image_url}/></div>)}
+              {this.props.ourObj.map(x=><div><div>{x.description}</div><img src={x.image_url}/><button onClick={()=> this.props.dispatch({type:'DELETE_BOOK'})}>Delete</button></div>)}
            </div>
         )
       }
 
     }
 
-export default InfoPage;
+
+    const mapStateToProps = (state) => {
+      return {
+        ourObj: state.ourObj
+      }
+    }
+
+export default connect (mapStateToProps) (InfoPage);
