@@ -2,15 +2,16 @@ import { put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
 
 // worker Saga: will be fired on "LOGOUT" actions
-function* emptyShelf(action) {
+function* getShelf() {
   try {
     // const config = {
     //   headers: { 'Content-Type': 'application/json' },
     //   withCredentials: true,
     // };
-
-    yield axios.post('/api/shelf', action.payload);
-    yield put({ type: 'SET_SHELF' });
+    // yield axios.post('/api/user/login', action.payload, config);
+    const items = yield axios.get('/api/shelf');
+    console.log('items', items);
+    yield put({ type: 'SET_ITEMS', payload: items.data });
 
     // now that the session has ended on the server
     // remove the client-side user object to let
@@ -20,8 +21,8 @@ function* emptyShelf(action) {
   }
 }
 
-function* loginSaga() {
-  yield takeLatest('ADD_TO_SHELF', emptyShelf);
+function* getShelfSaga() {
+  yield takeLatest('FETCH_BOOKS', getShelf);
 }
 
-export default loginSaga;
+export default getShelfSaga;

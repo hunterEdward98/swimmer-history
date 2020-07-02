@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 class InfoPage extends React.Component {
 
         state = {
-          ourObj: [],
+          // ourObj: [],
           description: '',
           image_url: ''
         }
@@ -57,7 +57,7 @@ class InfoPage extends React.Component {
              <input placeholder='book description' value={this.state.description} onChange={(event) => this.addInputs('description', event)}/>
              <input placeholder='image url' value={this.state.image_url} onChange= {(event) => this.addInputs('image_url', event)}/>
              <button onClick={()=>this.submitBook()}>Submit</button>
-              {this.props.ourObj.map(x=><div><div>{x.description}</div><img src={x.image_url}/><button onClick={()=> this.props.dispatch({type:'DELETE_BOOK'})}>Delete</button></div>)}
+              {this.props.item ?.map(x=><div><div>{x.description}</div><img src={x.image_url}/><button onClick={()=> this.props.dispatch({type:'DELETE_BOOK', payload: x.id})}>Delete</button></div>)}
            </div>
         )
       }
@@ -67,7 +67,7 @@ class InfoPage extends React.Component {
 
     const mapStateToProps = (state) => {
       return {
-        ourObj: state.ourObj
+        item: state.item
       }
     }
 
