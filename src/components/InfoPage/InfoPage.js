@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 
 class InfoPage extends React.Component {
 
+
   state = {
     // ourObj: [],
     description: '',
@@ -37,6 +38,32 @@ class InfoPage extends React.Component {
   }
 
   submitBook = () => {
+
+    const newBook= { 
+      description: this.state.description,
+      image_url: this.state.image_url
+    }
+    // Axios.post('/api/shelf', newBook ).then((response) => {
+    //   console.log('post is sent')
+    // }).catch(error => console.log('unsuccessful post', error));
+
+    this.props.dispatch({
+      type: 'ADD_TO_SHELF',
+      payload: newBook
+    });
+  }
+
+      render() {
+        return ( 
+           <div>
+             <input placeholder='book description' value={this.state.description} onChange={(event) => this.addInputs('description', event)}/>
+             <input placeholder='image url' value={this.state.image_url} onChange= {(event) => this.addInputs('image_url', event)}/>
+             <button onClick={()=>this.submitBook()}>Submit</button>
+              {this.props.ourObj.map(x=><div><div>{x.description}</div><img src={x.image_url}/><button onClick={()=> this.props.dispatch({type:'DELETE_BOOK'})}>Delete</button></div>)}
+           </div>
+        )
+      }
+
 
     const newBook = {
       description: this.state.description,
@@ -76,4 +103,10 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(InfoPage);
+    const mapStateToProps = (state) => {
+      return {
+        ourObj: state.ourObj
+      }
+    }
+
+export default connect (mapStateToProps) (InfoPage);

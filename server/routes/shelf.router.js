@@ -20,6 +20,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
  * Add an item for the logged in user to the shelf
  */
 router.post('/', rejectUnauthenticated, (req, res) => {
+master
   const desc = req.body.description;
   const img = req.body.image_url
   const usr = req.user.id
@@ -29,6 +30,7 @@ router.post('/', rejectUnauthenticated, (req, res) => {
   }).catch(error => {
     res.sendStatus(500)
   })
+
 });
 
 
