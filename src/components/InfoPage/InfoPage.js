@@ -1,6 +1,7 @@
 import React, { useReducer } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment'
+import moment from 'moment';
+import Select from 'react-select';
 
 // This is one of our simplest components
 // It doesn't have local state, so it can be a function component.
@@ -9,22 +10,43 @@ import moment from 'moment'
 
 class InfoPage extends React.Component {
 
-
   state = {
     // ourObj: [],
     description: '',
-    image_url: ''
+    image_url: '',
+    swimmer: [''],
   }
-  getTimesForSwimmer(SwimmerName) {
-    this.props.dispatch({ type: 'FETCH_TIMES', payload: SwimmerName })
+  getTimesForSwimmer(event) {
+    this.props.dispatch({ type: 'FETCH_TIMES', payload: event })
   }
-
+  getAthletes = () => {
+    this.props.dispatch({ type: 'FETCH_ATHLETES', })
+  }
+  deleteTime = (targetID) => {
+    this.props.dispatch({ type: 'DELETE_TIME', payload: targetID })
+  }
+  componentDidMount() {
+    this.getAthletes();
+  }
+  setAthlete(event) {
+    this.setState({
+      swimmer: [event]
+    })
+  }
+  editTime() {
+    return true;
+  }
   render() {
-    this.getTimesForSwimmer('hunter')
     return (
       <div className='container'>
         <table className='table table-dark'>
           <thead>
+            <tr>
+              <th scope='col' colSpan={5}>
+                <Select placeholder='SELECT SWIMMER...' options={this.props.swimmer ? this.props.swimmer.map((x, i) => { return ({ label: x.athlete_name, value: i }) }) : { label: 'hunter', value: 1 }} onChange={(event) => this.getTimesForSwimmer(event.label)}>
+                </Select>
+              </th>
+            </tr>
             <tr>
               <th scope='col'>Event</th>
               <th scope='col'>Time</th>
@@ -39,12 +61,12 @@ class InfoPage extends React.Component {
                 <th scope='col'>{x.event_name}</th>
                 <th scope='col'>{x.swim_time}</th>
                 <th scope='col'>{moment(x.date).format('MMMM Do YYYY')}</th>
-                {this.props.user.auth_level >= 3 && <th><button className='btn btn-warning'> Edit </button></th>}
-                {this.props.user.auth_level >= 3 && <th><button className='btn btn-danger'>Delete</button></th>}
+                {this.props.user.auth_level >= 3 && <th><button className='btn btn-warning' onClick={() => this.editTime(x)}> Edit </button></th>}
+                {this.props.user.auth_level >= 3 && <th><button className='btn btn-danger' onClick={() => this.deleteTime(x.id)}>Delete</button></th>}
               </tr>)}
           </tbody>
         </table>
-      </div>
+      </div >
     )
   }
 
@@ -55,7 +77,8 @@ const mapStateToProps = (state) => {
   return {
     time: state.time,
     ourObj: state.ourObj,
-    user: state.user
+    user: state.user,
+    swimmer: state.athlete
   }
 }
 

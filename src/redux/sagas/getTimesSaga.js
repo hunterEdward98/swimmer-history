@@ -4,7 +4,8 @@ import axios from 'axios';
 // worker Saga: will be fired on "LOGOUT" actions
 function* getTimes(action) {
   try {
-    const items = yield axios.get('/api/shelf', action.payload);
+    console.log(action.payload)
+    const items = yield axios.get(`/api/shelf/times/${action.payload}`);
     console.log('items', items);
     yield put({ type: 'SET_TIMES', payload: items.data });
 

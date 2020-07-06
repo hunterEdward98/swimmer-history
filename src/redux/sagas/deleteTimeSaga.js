@@ -5,7 +5,7 @@ import axios from 'axios';
 function* emptyShelf(action) {
   try {
     yield axios.delete(`/api/shelf/${action.payload}`);
-    yield put({ type: 'FETCH_BOOKS' });
+    yield put({ type: 'FETCH_TIMES' });
 
     // now that the session has ended on the server
     // remove the client-side user object to let
@@ -16,7 +16,7 @@ function* emptyShelf(action) {
 }
 
 function* loginSaga() {
-  yield takeLatest('DELETE_BOOK', emptyShelf);
+  yield takeLatest('DELETE_TIME', emptyShelf);
 }
 
 export default loginSaga;
