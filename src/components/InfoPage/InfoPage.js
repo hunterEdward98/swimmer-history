@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment'
 
 // This is one of our simplest components
 // It doesn't have local state, so it can be a function component.
@@ -14,82 +15,35 @@ class InfoPage extends React.Component {
     description: '',
     image_url: ''
   }
-
-  componentDidMount() {
-    this.fillShelf();
-  }
-
-  fillShelf = () => {
-    // Axios.get('/api/shelf').then((response) => {
-    //     console.log('this is what we get', response.data)
-    //     this.setState({
-    //       ourObj: response.data
-    //     })
-
-    this.props.dispatch({
-      type: 'FETCH_BOOKS',
-
-    });
-
-  }
-
-  addInputs = (key, event) => {
-    this.setState({ [key]: event.target.value })
-  }
-
-  submitBook = () => {
-
-    const newBook= { 
-      description: this.state.description,
-      image_url: this.state.image_url
-    }
-    // Axios.post('/api/shelf', newBook ).then((response) => {
-    //   console.log('post is sent')
-    // }).catch(error => console.log('unsuccessful post', error));
-
-    this.props.dispatch({
-      type: 'ADD_TO_SHELF',
-      payload: newBook
-    });
-  }
-
-      render() {
-        return ( 
-           <div>
-             <input placeholder='book description' value={this.state.description} onChange={(event) => this.addInputs('description', event)}/>
-             <input placeholder='image url' value={this.state.image_url} onChange= {(event) => this.addInputs('image_url', event)}/>
-             <button onClick={()=>this.submitBook()}>Submit</button>
-              {this.props.ourObj.map(x=><div><div>{x.description}</div><img src={x.image_url}/><button onClick={()=> this.props.dispatch({type:'DELETE_BOOK'})}>Delete</button></div>)}
-           </div>
-        )
-      }
-
-
-    const newBook = {
-      description: this.state.description,
-      image_url: this.state.image_url
-    }
-    // Axios.post('/api/shelf', newBook ).then((response) => {
-    //   console.log('post is sent')
-    // }).catch(error => console.log('unsuccessful post', error));
-
-    this.props.dispatch({
-      type: 'ADD_TO_SHELF',
-      payload: newBook
-    });
-    this.setState({
-      description: '',
-      image_url: ''
-    })
+  getTimesForSwimmer(SwimmerName) {
+    this.props.dispatch({ type: 'FETCH_TIMES', payload: SwimmerName })
   }
 
   render() {
+    this.getTimesForSwimmer('hunter')
     return (
-      <div>
-        <input placeholder='book description' value={this.state.description} onChange={(event) => this.addInputs('description', event)} />
-        <input placeholder='image url' value={this.state.image_url} onChange={(event) => this.addInputs('image_url', event)} />
-        <button onClick={() => this.submitBook()}>Submit</button>
-        {this.props.item?.map(x => <div><div>{x.description}</div><img src={x.image_url} /><button onClick={() => this.props.dispatch({ type: 'DELETE_BOOK', payload: x.id })}>Delete</button></div>)}
+      <div className='container'>
+        <table className='table table-dark'>
+          <thead>
+            <tr>
+              <th scope='col'>Event</th>
+              <th scope='col'>Time</th>
+              <th scope='col'>Date</th>
+              {this.props.user.auth_level >= 3 && <th>Edit</th>}
+              {this.props.user.auth_level >= 3 && <th>Delete</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.time.map(x =>
+              <tr>
+                <th scope='col'>{x.event_name}</th>
+                <th scope='col'>{x.swim_time}</th>
+                <th scope='col'>{moment(x.date).format('MMMM Do YYYY')}</th>
+                {this.props.user.auth_level >= 3 && <th><button className='btn btn-warning'> Edit </button></th>}
+                {this.props.user.auth_level >= 3 && <th><button className='btn btn-danger'>Delete</button></th>}
+              </tr>)}
+          </tbody>
+        </table>
       </div>
     )
   }
@@ -99,14 +53,10 @@ class InfoPage extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    item: state.item
+    time: state.time,
+    ourObj: state.ourObj,
+    user: state.user
   }
 }
 
-    const mapStateToProps = (state) => {
-      return {
-        ourObj: state.ourObj
-      }
-    }
-
-export default connect (mapStateToProps) (InfoPage);
+export default connect(mapStateToProps)(InfoPage);

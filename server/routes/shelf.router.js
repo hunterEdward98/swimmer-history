@@ -5,22 +5,29 @@ const { rejectUnauthenticated } = require('../modules/authentication-middleware'
 /**
  * Get all of the items on the shelf
  */
-router.get('/', rejectUnauthenticated, (req, res) => {
-  const queryText = 'SELECT * FROM item'
+router.get('/', (req, res) => {
+  const athlete = req.body.athlete
+  const queryText = `
+  SELECT athletes.athlete_name, events.event_name, swim_time, times.date
+  FROM times
+  JOIN events on times.event_id=events.id
+  JOIN athletes on times.athlete_id = athletes.id
+  ORDER BY times.date DESC
+  `
   pool.query(queryText).then(result => {
     console.log('query:', result.rows);
     res.send(result.rows)
   }).catch(error => {
+    console.log(error)
     res.sendStatus(500);
   })
 });
-
 
 /**
  * Add an item for the logged in user to the shelf
  */
 router.post('/', rejectUnauthenticated, (req, res) => {
-master
+  master
   const desc = req.body.description;
   const img = req.body.image_url
   const usr = req.user.id

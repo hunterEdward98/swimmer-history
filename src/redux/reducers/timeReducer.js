@@ -1,6 +1,6 @@
-const itemReducer = (state = [], action) => {
+const timeReducer = (state = [], action) => {
   switch (action.type) {
-    case 'SET_ITEMS':
+    case 'SET_TIMES':
       return action.payload;
     default:
       return state;
@@ -9,4 +9,4 @@ const itemReducer = (state = [], action) => {
 
 // user will be on the redux state at:
 // state.user
-export default itemReducer;
+export default timeReducer;
