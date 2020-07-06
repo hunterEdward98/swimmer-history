@@ -25,6 +25,7 @@ class InfoPage extends React.Component {
   deleteTime = (targetID) => {
     this.props.dispatch({ type: 'DELETE_TIME', payload: targetID })
   }
+  deleteAthlete = () => { }
   componentDidMount() {
     this.getAthletes();
   }
@@ -42,10 +43,12 @@ class InfoPage extends React.Component {
         <table className='table table-dark'>
           <thead>
             <tr>
-              <th scope='col' colSpan={5}>
+              <th scope='col-10' colSpan={4}>
                 <Select placeholder='SELECT SWIMMER...' options={this.props.swimmer ? this.props.swimmer.map((x, i) => { return ({ label: x.athlete_name, value: i }) }) : { label: 'hunter', value: 1 }} onChange={(event) => this.getTimesForSwimmer(event.label)}>
                 </Select>
               </th>
+              {this.props.user.auth_level >= 3 && <th scope='col'><button className='btn btn-danger btn-lg col-12' onClick={() => this.deleteAthlete()}>DELETE SWIMMER</button></th>}
+
             </tr>
             <tr>
               <th scope='col'>Event</th>
